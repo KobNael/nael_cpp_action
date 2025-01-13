@@ -30,3 +30,10 @@ runs:
       working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
       shell: bash
       run: make run_memcheck
+    # Copy Compilation Database for Sonar
+    - name: Export Database
+      shell: bash
+      working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      with:
+        directory: ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
+      run: mkdir -p ${{directory}} && cp compile_commands.json ${{directory}}
