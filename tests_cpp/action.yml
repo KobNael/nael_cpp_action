@@ -1,0 +1,31 @@
+name: tests_cpp
+description: Launch code quality analysis
+inputs:
+  build_type:
+    required: true
+    description: The build type (Release|Debug)
+runs:
+  using: composite
+  steps:
+    # UnitTests
+    - name: Run UnitTests
+      working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      shell: bash
+      run: make run_unit_tests
+    # CPPCheck
+    - if: ${{ inputs.build_type == 'Debug' }}
+      name: Run CppCheck
+      working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      shell: bash
+      run: make run_cppcheck
+    # Coverage
+    - if: ${{ inputs.build_type == 'Debug' }}
+      name: Run Coverage
+      working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      run: make run_coverage
+    # Memcheck
+    - if: ${{ inputs.build_type == 'Debug' }}
+      name: Run Valgrind
+      working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      shell: bash
+      run: make run_memcheck
