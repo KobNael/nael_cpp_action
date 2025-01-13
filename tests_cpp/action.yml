@@ -30,10 +30,15 @@ runs:
       working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
       shell: bash
       run: make run_memcheck
-    # Copy Compilation Database for Sonar
-    - name: Export Database
-      shell: bash
+    # Copy Every useful files for sonar
+    - name: Save reports
       working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      shell: bash
+      run: |
+        mkdir -p ${{github.workspace}}/${{inputs.build_type}}/
+        cp {**/*results.xml,**compile_commands.json} ${{github.workspace}}/${{inputs.build_type}}/
+    # Upload the files
+    - uses: actions/upload-artifact@v4
       with:
-        directory: ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
-      run: mkdir -p ${{directory}} && cp compile_commands.json ${{directory}}
+        name: sonar-results-${{inputs.build_type}}
+        path: ${{inputs.build_type}}/
