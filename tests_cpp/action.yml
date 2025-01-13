@@ -22,6 +22,7 @@ runs:
     - if: ${{ inputs.build_type == 'Debug' }}
       name: Run Coverage
       working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
+      shell: bash
       run: make run_coverage
     # Memcheck
     - if: ${{ inputs.build_type == 'Debug' }}
