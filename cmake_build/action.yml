@@ -1,0 +1,45 @@
+name: cmake_build
+description: Build using conan and cmake
+inputs:
+  build_type:
+    required: true
+    description: The build type (Release|Debug)
+runs:
+  using: composite
+  steps:
+    # Cach conan local repository
+    - name: Cache conan dependencies
+      id: cache-dependencies
+      uses: actions/cache@v4
+      with:
+        # conan files are stored in `~/.conan2` on Linux
+        path: ~/.conan2
+        key: ${{inputs.build_type}}-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+
+    # If no cache found, generate profile
+    - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+      name: Create default profile
+      shell: bash
+      run: conan profile detect
+
+    # Build
+    - if: ${{ inputs.build_type == 'Release' }}
+      name: Build
+      shell: bash
+      run: >
+        conan build .
+        -s compiler.cppstd=gnu20
+        -s build_type=${{inputs.build_type}}
+        --build=missing
+
+    - if: ${{ inputs.build_type == 'Debug' }}
+      name: Build
+      shell: bash
+      run: >
+        conan build .
+        -s compiler.cppstd=gnu20
+        -s build_type=${{inputs.build_type}}
+        --build=missing
+        -o coverage=ON
+        -o cppcheck=ON
+        -o valgrind=ON
