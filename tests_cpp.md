@@ -7,8 +7,10 @@ Call specific cmake targets :
 
 Inputs are :
  * build_type (required) : *"Release"* | *"Debug"*
- * working_dir : the working directory
- (default value being `${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}`)
+ * root_dir : the working directory
+ (default value being `${{github.workspace}}/builds/Linux/gcc/13/x86_64/`)
+
+The working directory for these calls will be `${{inputs.root_dir}}/${{inputs.build_type}}/`.
 
 Example:
 
