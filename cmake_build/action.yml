@@ -4,27 +4,18 @@ inputs:
   build_type:
     required: true
     description: The build type (Release|Debug)
+  args:
+    required: false
+    description: The additional argument
+    default: "-s compiler.cppstd=gnu20 -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
 runs:
   using: composite
   steps:
     # Build
-    - if: ${{ inputs.build_type == 'Release' }}
-      name: Build
+    - name: Build
       shell: bash
       run: >
         conan build .
-        -s compiler.cppstd=gnu20
         -s build_type=${{inputs.build_type}}
         --build=missing
-
-    - if: ${{ inputs.build_type == 'Debug' }}
-      name: Build
-      shell: bash
-      run: >
-        conan build .
-        -s compiler.cppstd=gnu20
-        -s build_type=${{inputs.build_type}}
-        --build=missing
-        -o '&:coverage=ON'
-        -o '&:cppcheck=ON'
-        -o '&:valgrind=ON'
+        ${{inputs.args}}
