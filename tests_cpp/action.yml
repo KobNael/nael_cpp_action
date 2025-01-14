@@ -37,8 +37,3 @@ runs:
       run: |
         mkdir -p ${{github.workspace}}/${{inputs.build_type}}/
         cp {**/*results.xml,**compile_commands.json} ${{github.workspace}}/${{inputs.build_type}}/
-    # Upload the files
-    - uses: actions/upload-artifact@v4
-      with:
-        name: sonar-results-${{inputs.build_type}}
-        path: ${{inputs.build_type}}/
