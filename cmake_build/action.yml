@@ -14,7 +14,7 @@ runs:
       with:
         # conan files are stored in `~/.conan2` on Linux
         path: ~/.conan2
-        key: ${{inputs.build_type}}-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
 
     # If no cache found, generate profile
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
