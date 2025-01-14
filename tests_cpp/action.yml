@@ -19,7 +19,8 @@ runs:
       shell: bash
       run: make run_cppcheck
     # Coverage
-    - name: Run Coverage
+    - if: ${{ inputs.build_type == 'Debug' }}
+      name: Run Coverage
       working-directory: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/${{inputs.build_type}}
       shell: bash
       run: make run_coverage
@@ -35,4 +36,6 @@ runs:
       shell: bash
       run: |
         mkdir -p ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
-        cp {**/*results.xml,**compile_commands.json,**/sonarqube.xml} ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
+        cp {**/*results.xml,**compile_commands.json} ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
+        [ -f "sonarqube.xml" ] && mv sonarqube.xml ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/sonarqube.xml
+
