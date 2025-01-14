@@ -1,5 +1,9 @@
 name: Get C++ Tools
 description: Install the required tools for c++ compilation and analysis
+inputs:
+  key:
+    required: true
+    description: key for cache
 runs:
   using: composite
   steps:
@@ -19,7 +23,7 @@ runs:
       with:
         # conan files are stored in `~/.conan2` on Linux
         path: ~/.conan2
-        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+        key: ${{ inputs.key }}
     # If no cache found, generate profile
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
       name: Create default profile
