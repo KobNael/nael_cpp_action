@@ -7,21 +7,6 @@ inputs:
 runs:
   using: composite
   steps:
-    # Cach conan local repository
-    - name: Cache conan dependencies
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        # conan files are stored in `~/.conan2` on Linux
-        path: ~/.conan2
-        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
-
-    # If no cache found, generate profile
-    - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
-      name: Create default profile
-      shell: bash
-      run: conan profile detect
-
     # Build
     - if: ${{ inputs.build_type == 'Release' }}
       name: Build
