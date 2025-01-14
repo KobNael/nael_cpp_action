@@ -31,6 +31,7 @@ runs:
         -s compiler.cppstd=gnu20
         -s build_type=${{inputs.build_type}}
         --build=missing
+        -o '&:coverage=ON'
 
     - if: ${{ inputs.build_type == 'Debug' }}
       name: Build
