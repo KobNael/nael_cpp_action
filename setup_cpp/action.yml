@@ -7,6 +7,11 @@ runs:
     - name: Install
       shell: bash
       run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind
+    # Install conan
+    - name: Get Conan
+      uses: turtlebrowser/get-conan@main
+      with:
+        version: 2.11.0
     # Cache conan local repository
     - name: Cache conan local repository
       id: cache-dependencies
