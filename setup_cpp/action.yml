@@ -1,0 +1,27 @@
+name: Get C++ Tools
+description: Install the required tools for c++ compilation and analysis
+runs:
+  using: composite
+  steps:
+    # Download tools
+    - name: Install
+      shell: bash
+      run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind
+    # Install conan
+    - name: Get Conan
+      uses: turtlebrowser/get-conan@main
+      with:
+        version: 2.11.0
+    # Cache conan local repository
+    - name: Cache conan local repository
+      id: cache-dependencies
+      uses: actions/cache@v4
+      with:
+        # conan files are stored in `~/.conan2` on Linux
+        path: ~/.conan2
+        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+    # If no cache found, generate profile
+    - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+      name: Create default profile
+      shell: bash
+      run: conan profile detect
