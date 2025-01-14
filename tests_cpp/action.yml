@@ -36,4 +36,4 @@ runs:
       shell: bash
       run: |
         mkdir -p ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
-        cp {**/*results.xml,**compile_commands.json} ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
+        cp {**/*results.xml,**compile_commands.json,**/sonarqube.xml} ${{github.workspace}}/compilation-databases/${{inputs.build_type}}/
