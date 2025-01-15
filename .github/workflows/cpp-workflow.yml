@@ -1,8 +1,16 @@
 # Workflow for C++ project
 name: Reusable C++ Workflow
+# Only for dev
+on:
+  workflow_call:
+    secrets:
+      SONARQUBE_TOKEN:
+        required: true
+      SONAR_HOST_URL:
+        required: true
 # List of actions
 jobs:
-    # Just linux for now
+  ubuntu-latest-build:
     runs-on: ubuntu-latest
     # Steps
     steps:
