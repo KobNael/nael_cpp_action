@@ -1,15 +1,7 @@
 # Workflow for C++ project
 name: Reusable C++ Workflow
-# Only for dev
-on:
-  push:
-    branches: [ "dev", "main" ]
-  pull_request:
-    branches: [ "dev", "main" ]
-    types: [opened, synchronize, reopened]
 # List of actions
 jobs:
-  cpp_pipeline:
     # Just linux for now
     runs-on: ubuntu-latest
     # Steps
