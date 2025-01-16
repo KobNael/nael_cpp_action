@@ -3,6 +3,11 @@ name: Reusable C++ Workflow
 # Only for dev
 on:
   workflow_call:
+    inputs:
+      CHECK_QUALITY_GATE:
+        required: false
+        type: boolean
+        default: true
     secrets:
       SONARQUBE_TOKEN:
         required: true
@@ -53,7 +58,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }} # Put the name of your token here
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
     # Sonar Quality Gate
-    - name: SonarQube quality gate check
+    - if: ${{ inputs.CHECK_QUALITY_GATE }}
+      name: SonarQube quality gate check
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
