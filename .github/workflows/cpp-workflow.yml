@@ -4,6 +4,10 @@ name: Reusable C++ Workflow
 on:
   workflow_call:
     inputs:
+      RUN_SONAR:
+        required: false
+        type: boolean
+        default: true
       CHECK_QUALITY_GATE:
         required: false
         type: boolean
@@ -54,13 +58,14 @@ jobs:
       with:
         build_type: Debug
     # Sonar analysis
-    - name: Sonar analysis
+    - if: ${{ inputs.RUN_SONAR }}
+      name: Sonar analysis
       uses: SonarSource/sonarqube-scan-action@v4
       env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
     # Sonar Quality Gate
-    - if: ${{ inputs.CHECK_QUALITY_GATE }}
+    - if: ${{ inputs.RUN_SONAR && inputs.CHECK_QUALITY_GATE }}
       name: SonarQube quality gate check
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
