@@ -9,9 +9,11 @@ on:
         type: boolean
         default: true
     secrets:
-      SONARQUBE_TOKEN:
+      SONAR_TOKEN:
         required: true
       SONAR_HOST_URL:
+        required: true
+      GH_PAT:
         required: true
 # List of actions
 jobs:
@@ -55,7 +57,7 @@ jobs:
     - name: Sonar analysis
       uses: SonarSource/sonarqube-scan-action@v4
       env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }} # Put the name of your token here
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
     # Sonar Quality Gate
     - if: ${{ inputs.CHECK_QUALITY_GATE }}
@@ -63,6 +65,6 @@ jobs:
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
-        SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }} # Put the name of your token here
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
 
