@@ -102,7 +102,7 @@ jobs:
           version: 2.11.0
       - name: Setup Profile
         run: >
-          conan config install https://github.com/KobNael/nael_cpp_action.git
+          conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b win_compil"
     # Build
       - name: Build
         run: >
