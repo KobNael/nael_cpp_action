@@ -1,0 +1,11 @@
+[settings]
+os=Windows
+compiler=gcc
+compiler.version=12
+compiler.libcxx=libstdc++11
+compiler.threads=posix
+compiler.exception=seh
+arch=x86_64
+
+[tool_requires]
+mingw-builds/12.2.0
