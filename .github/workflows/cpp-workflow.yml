@@ -112,3 +112,4 @@ jobs:
         uses: KobNael/nael_cpp_action/tests_cpp@win_compil
         with:
           build_type: Release
+          root_dir: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\
