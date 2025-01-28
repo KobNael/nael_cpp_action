@@ -7,8 +7,9 @@ inputs:
 runs:
   using: composite
   steps:
-    # Download tools
-    - name: Install
+    # Download tools for linux
+    - if: runner.os == 'Linux'
+      name: Install
       shell: bash
       run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind
     # Install conan
@@ -28,4 +29,5 @@ runs:
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
       name: Create default profile
       shell: bash
-      run: conan profile detect
+      run: >
+        conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b win_compil"

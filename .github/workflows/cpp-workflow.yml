@@ -43,27 +43,28 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     # Get c++ tools
     - name: Get C++ Tools
-      uses: KobNael/nael_cpp_action/setup_cpp@v1
+      uses: KobNael/nael_cpp_action/setup_cpp@win_compil
       with:
-        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+        key: nux-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
     # Release Build
     - name: Release conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
         build_type: Release
     # Test
     - name: Release analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
         build_type: Release
     # Debug Build
     - name: Debug conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
         build_type: Debug
+        args: " -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
         build_type: Debug
     # Sonar analysis
@@ -96,16 +97,18 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           submodules: recursive # Submodules needed
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Get Conan
-        uses: turtlebrowser/get-conan@main
+      # Get c++ tools
+      - name: Get C++ Tools
+        uses: KobNael/nael_cpp_action/setup_cpp@win_compil
         with:
-          version: 2.11.0
-      - name: Setup Profile
-        run: >
-          conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b win_compil"
-    # Build
-      - name: Build
-        run: >
-          conan build .
-          -pr:a windows-latest
-          --build missing
+          key: win-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+      # Release Build
+      - name: Release conan build
+        uses: KobNael/nael_cpp_action/cmake_build@win_compil
+        with:
+          build_type: Release
+      # Test
+      - name: Release analysis
+        uses: KobNael/nael_cpp_action/tests_cpp@win_compil
+        with:
+          build_type: Release

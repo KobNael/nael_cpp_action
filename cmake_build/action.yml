@@ -7,7 +7,7 @@ inputs:
   args:
     required: false
     description: The additional argument
-    default: "-s compiler.cppstd=gnu20 -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
+    default: ""
 runs:
   using: composite
   steps:
@@ -16,6 +16,7 @@ runs:
       shell: bash
       run: >
         conan build .
+        -pr:a ${{runner.os}}-latest
         -s build_type=${{inputs.build_type}}
         --build=missing
         ${{inputs.args}}
