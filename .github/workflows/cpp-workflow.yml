@@ -16,6 +16,13 @@ on:
         required: false
         type: boolean
         default: true
+      UPLOAD_ARTIFACT:
+          required: false
+          type: boolean
+          default: false
+      ARTIFACT_NAME:
+        required: false
+        type: string
     secrets:
       SONAR_TOKEN:
         required: true
@@ -113,3 +120,10 @@ jobs:
         with:
           build_type: Release
           root_dir: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\
+      # Upload
+      - if: ${{ inputs.UPLOAD_ARTIFACT }}
+        name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+            name: ps_scheduling
+            path: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\Release\${{inputs.ARTIFACT_NAME}}
