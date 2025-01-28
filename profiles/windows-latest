@@ -9,3 +9,4 @@ arch=x86_64
 
 [options]
 boost/*:without_stacktrace=True
+boost/*:debug_level=6
