@@ -1,6 +1,10 @@
+############################
 # Workflow for C++ project
+############################
 name: Reusable C++ Workflow
-# Only for dev
+#================
+# Inputs
+#================
 on:
   workflow_call:
     inputs:
@@ -19,8 +23,13 @@ on:
         required: true
       GH_PAT:
         required: true
-# List of actions
+#=================
+# Pipelines
+#=================
 jobs:
+  #------------------
+  # Ubuntu build
+  #------------------
   ubuntu-latest-build:
     runs-on: ubuntu-latest
     # Steps
@@ -73,3 +82,30 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
 
+  #------------------
+  # Windows build
+  #------------------
+  windows:
+    runs-on: windows-latest
+    # Steps
+    steps:
+        # Checkout sources
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          submodules: recursive # Submodules needed
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # Get c++ tools
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc-fortran
+      - name: Put MSYS2_MinGW64 on PATH
+        run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    # Install conan
+      - name: Get Conan
+        uses: turtlebrowser/get-conan@main
+        with:
+          version: 2.11.0
