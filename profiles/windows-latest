@@ -6,3 +6,6 @@ compiler.libcxx=libstdc++11
 compiler.threads=posix
 compiler.exception=seh
 arch=x86_64
+
+[options]
+boost/*:without_stacktrace=True
