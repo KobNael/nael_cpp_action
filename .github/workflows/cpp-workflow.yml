@@ -85,7 +85,7 @@ jobs:
   #------------------
   # Windows build
   #------------------
-  windows:
+  windows-latest-build:
     runs-on: windows-latest
     # Steps
     steps:
@@ -104,8 +104,21 @@ jobs:
             mingw-w64-x86_64-gcc-fortran
       - name: Put MSYS2_MinGW64 on PATH
         run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-    # Install conan
+      - name: Test clang
+        run : clang --version
+        # Install conan
       - name: Get Conan
         uses: turtlebrowser/get-conan@main
         with:
           version: 2.11.0
+    # Build
+      - name: Build
+        run: >
+          conan build .
+          -s os=Windows
+          -s arch=x86_64
+          -s build_type=Release
+          -s compiler=gcc
+          -s compiler.cppstd=20
+          -s compiler.libcxx=libstdc++11
+          -s compiler.version=13
