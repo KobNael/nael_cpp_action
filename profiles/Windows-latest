@@ -1,0 +1,10 @@
+[settings]
+os=Windows
+compiler=msvc
+compiler.version=194
+compiler.cppstd=20
+compiler.runtime=dynamic
+arch=x86_64
+
+[options]
+boost/*:without_stacktrace=True
