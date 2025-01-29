@@ -1,10 +1,10 @@
 name: cmake_build
 description: Build using conan and cmake
 inputs:
-  build_type:
+  BUILD_TYPE:
     required: true
     description: The build type (Release|Debug)
-  args:
+  ARGS:
     required: false
     description: The additional argument
     default: ""
@@ -17,6 +17,6 @@ runs:
       run: >
         conan build .
         -pr:a ${{runner.os}}-latest
-        -s build_type=${{inputs.build_type}}
+        -s build_type=${{inputs.BUILD_TYPE}}
         --build=missing
-        ${{inputs.args}}
+        ${{inputs.ARGS}}

@@ -57,23 +57,23 @@ jobs:
     - name: Release conan build
       uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Test
     - name: Release analysis
       uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Debug Build
     - name: Debug conan build
       uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
-        build_type: Debug
-        args: " -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
+        BUILD_TYPE: Debug
+        ARGS: " -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
       uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
-        build_type: Debug
+        BUILD_TYPE: Debug
     # Sonar analysis
     - if: ${{ inputs.RUN_SONAR }}
       name: Sonar analysis
@@ -89,6 +89,11 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
+    # Install & upload
+    - name: Install & upload
+      uses: KobNael/nael_cpp_action/install@win_compil
+      with:
+        ARTIFACT_NAME: ${{inputs.ARTIFACT_NAME}}
 
   #------------------
   # Windows build
@@ -113,17 +118,16 @@ jobs:
       - name: Release conan build
         uses: KobNael/nael_cpp_action/cmake_build@win_compil
         with:
-          build_type: Release
+          BUILD_TYPE: Release
       # Test
       - name: Release analysis
         uses: KobNael/nael_cpp_action/tests_cpp@win_compil
         with:
-          build_type: Release
-          root_dir: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\
-      # Upload
-      - if: ${{ inputs.UPLOAD_ARTIFACT }}
-        name: Upload binaries
-        uses: actions/upload-artifact@v4
+          BUILD_TYPE: Release
+          ROOT_DIR: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\
+      # Install & upload
+      - name: Install & upload
+        uses: KobNael/nael_cpp_action/install@win_compil
         with:
-            name: ps_scheduling
-            path: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\Release\${{inputs.ARTIFACT_NAME}}
+          BUILD_DIR: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\Release\
+          ARTIFACT_NAME: ${{inputs.ARTIFACT_NAME}}
