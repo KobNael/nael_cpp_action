@@ -8,6 +8,10 @@ inputs:
     required: false
     description: The working directory
     default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/
+  WITH_COVERAGE:
+    required: false
+    description: Should the coverage target run
+    default: true
 runs:
   using: composite
   steps:
@@ -17,7 +21,7 @@ runs:
       shell: bash
       run: make run_unit_tests
     # Coverage
-    - if: ${{ inputs.BUILD_TYPE == 'Debug' }}
+    - if: ${{ inputs.BUILD_TYPE == 'Debug' && inputs.RUN_COVERAGE }}
       name: Run Coverage
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash

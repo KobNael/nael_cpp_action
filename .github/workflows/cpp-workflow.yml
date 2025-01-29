@@ -79,6 +79,7 @@ jobs:
       uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
         BUILD_TYPE: Debug
+        WITH_COVERAGE: ${{inputs.WITH_COVERAGE}}
     # Sonar analysis
     - if: ${{ inputs.RUN_SONAR }}
       name: Sonar analysis
