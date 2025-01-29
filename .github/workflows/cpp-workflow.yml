@@ -1,9 +1,17 @@
+############################
 # Workflow for C++ project
+############################
 name: Reusable C++ Workflow
-# Only for dev
+#================
+# Inputs
+#================
 on:
   workflow_call:
     inputs:
+      WITH_COVERAGE:
+          required: false
+          type: boolean
+          default: true
       RUN_SONAR:
         required: false
         type: boolean
@@ -12,6 +20,14 @@ on:
         required: false
         type: boolean
         default: true
+      UPLOAD_ARTIFACT:
+          required: false
+          type: boolean
+          default: false
+      ARTIFACT_NAME:
+        required: false
+        type: string
+        default: ''
     secrets:
       SONAR_TOKEN:
         required: true
@@ -19,8 +35,13 @@ on:
         required: true
       GH_PAT:
         required: true
-# List of actions
+#=================
+# Pipelines
+#=================
 jobs:
+  #------------------
+  # Ubuntu build
+  #------------------
   ubuntu-latest-build:
     runs-on: ubuntu-latest
     # Steps
@@ -34,29 +55,31 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     # Get c++ tools
     - name: Get C++ Tools
-      uses: KobNael/nael_cpp_action/setup_cpp@v1
+      uses: KobNael/nael_cpp_action/setup_cpp@win_compil
       with:
-        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+        KEY: nux-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
     # Release Build
     - name: Release conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Test
     - name: Release analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Debug Build
     - name: Debug conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
-        build_type: Debug
+        BUILD_TYPE: Debug
+        ARGS: " -o '&:coverage=${{ !inputs.WITH_COVERAGE && 'OFF' || 'ON' }}' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@win_compil
       with:
-        build_type: Debug
+        BUILD_TYPE: Debug
+        WITH_COVERAGE: ${{inputs.WITH_COVERAGE}}
     # Sonar analysis
     - if: ${{ inputs.RUN_SONAR }}
       name: Sonar analysis
@@ -72,4 +95,47 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
+    # Install & upload
+    - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.ARTIFACT_NAME != ''}}
+      name: Install & upload
+      uses: KobNael/nael_cpp_action/install@win_compil
+      with:
+        ARTIFACT_NAME: ${{inputs.ARTIFACT_NAME}}
 
+  #------------------
+  # Windows build
+  #------------------
+  windows-latest-build:
+    runs-on: windows-latest
+    # Steps
+    steps:
+        # Checkout sources
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          submodules: recursive # Submodules needed
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # Get c++ tools
+      - name: Get C++ Tools
+        uses: KobNael/nael_cpp_action/setup_cpp@win_compil
+        with:
+          KEY: win-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+      # Release Build
+      - name: Release conan build
+        uses: KobNael/nael_cpp_action/cmake_build@win_compil
+        with:
+          BUILD_TYPE: Release
+      # Test
+      - name: Release analysis
+        uses: KobNael/nael_cpp_action/tests_cpp@win_compil
+        with:
+          BUILD_TYPE: Release
+          ROOT_DIR: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\
+      # Install & upload
+      - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.ARTIFACT_NAME != ''}}
+        name: Install & upload
+        uses: KobNael/nael_cpp_action/install@win_compil
+        with:
+          BUILD_DIR: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\Release\
+          ARTIFACT_NAME: ${{inputs.ARTIFACT_NAME}}

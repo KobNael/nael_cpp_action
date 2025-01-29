@@ -1,0 +1,24 @@
+name: install_cpp
+description: Launch install and upload binary dir
+inputs:
+  BUILD_DIR:
+    required: false
+    description: The working directory to launch install command
+    default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/Release/
+  ARTIFACT_NAME:
+    required: true
+    description: A file, directory or wildcard pattern that describes what to upload
+runs:
+  using: composite
+  steps:
+    # Install
+    - name: Run install
+      working-directory: ${{inputs.BUILD_DIR}}
+      shell: bash
+      run: make install
+    # Upload
+    - name: Upload binaries
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{runner.os}}-binaries
+        path: ${{inputs.ARTIFACT_NAME}}
