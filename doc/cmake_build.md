@@ -1,11 +1,11 @@
 
 # Build with conan and cmake
 
-Call `conan build . --build missing` with the required build_type.
+Call `conan build . -pr:a ${{runner.os}}-latest --build missing` with the required build_type.
 
 Inputs are :
- * build_type (required) : eg. *"Release"* | *"Debug"*
- * args : additional settings or option, eg. *"-s compiler.cppstd=gnu20"*
+ * BUILD_TYPE (required) : eg. *"Release"* | *"Debug"*
+ * ARGS : additional settings or option, eg. *"-s compiler.cppstd=gnu20"*
 
 Example:
 
@@ -18,4 +18,4 @@ Example:
         args: -s compiler.cppstd=gnu20 -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'
 ```
 
-Back to [Main page](README.md)
+Back to [Main page](../README.md)
