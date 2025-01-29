@@ -8,6 +8,10 @@ name: Reusable C++ Workflow
 on:
   workflow_call:
     inputs:
+      WITH_COVERAGE:
+          required: false
+          type: boolean
+          default: true
       RUN_SONAR:
         required: false
         type: boolean
@@ -69,7 +73,7 @@ jobs:
       uses: KobNael/nael_cpp_action/cmake_build@win_compil
       with:
         BUILD_TYPE: Debug
-        ARGS: " -o '&:coverage=ON' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
+        ARGS: " -o '&:coverage=${{ !inputs.WITH_COVERAGE && 'OFF' || 'ON' }}' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
       uses: KobNael/nael_cpp_action/tests_cpp@win_compil
