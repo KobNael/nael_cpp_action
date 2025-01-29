@@ -1,20 +1,47 @@
+############################
 # Workflow for C++ project
+############################
 name: Reusable C++ Workflow
-# Only for dev
+#================
+# Inputs
+#================
 on:
   workflow_call:
     inputs:
+      WITH_COVERAGE:
+          required: false
+          type: boolean
+          default: true
+      RUN_SONAR:
+        required: false
+        type: boolean
+        default: true
       CHECK_QUALITY_GATE:
         required: false
         type: boolean
         default: true
+      UPLOAD_ARTIFACT:
+          required: false
+          type: boolean
+          default: false
+      PATH:
+        required: false
+        type: string
+        default: ''
     secrets:
-      SONARQUBE_TOKEN:
+      SONAR_TOKEN:
         required: true
       SONAR_HOST_URL:
         required: true
-# List of actions
+      GH_PAT:
+        required: true
+#=================
+# Pipelines
+#=================
 jobs:
+  #------------------
+  # Ubuntu build
+  #------------------
   ubuntu-latest-build:
     runs-on: ubuntu-latest
     # Steps
@@ -24,45 +51,92 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GH_PAT }}
+        clean: true # clean checkout
         submodules: recursive # Submodules needed
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     # Get c++ tools
     - name: Get C++ Tools
       uses: KobNael/nael_cpp_action/setup_cpp@v1
       with:
-        key: ${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+        KEY: nux-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
     # Release Build
     - name: Release conan build
       uses: KobNael/nael_cpp_action/cmake_build@v1
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Test
     - name: Release analysis
       uses: KobNael/nael_cpp_action/tests_cpp@v1
       with:
-        build_type: Release
+        BUILD_TYPE: Release
     # Debug Build
     - name: Debug conan build
       uses: KobNael/nael_cpp_action/cmake_build@v1
       with:
-        build_type: Debug
+        BUILD_TYPE: Debug
+        ARGS: " -o '&:coverage=${{ !inputs.WITH_COVERAGE && 'OFF' || 'ON' }}' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
       uses: KobNael/nael_cpp_action/tests_cpp@v1
       with:
-        build_type: Debug
+        BUILD_TYPE: Debug
+        WITH_COVERAGE: ${{inputs.WITH_COVERAGE}}
     # Sonar analysis
-    - name: Sonar analysis
+    - if: ${{ inputs.RUN_SONAR }}
+      name: Sonar analysis
       uses: SonarSource/sonarqube-scan-action@v4
       env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }} # Put the name of your token here
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
     # Sonar Quality Gate
-    - if: ${{ inputs.CHECK_QUALITY_GATE }}
+    - if: ${{ inputs.RUN_SONAR && inputs.CHECK_QUALITY_GATE }}
       name: SonarQube quality gate check
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
-        SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }} # Put the name of your token here
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
+    # Install & upload
+    - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.PATH != ''}}
+      name: Install & upload
+      uses: KobNael/nael_cpp_action/install@v1
+      with:
+        PATH: ${{inputs.PATH}}
 
+  #------------------
+  # Windows build
+  #------------------
+  windows-latest-build:
+    runs-on: windows-latest
+    # Steps
+    steps:
+        # Checkout sources
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          submodules: recursive # Submodules needed
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # Get c++ tools
+      - name: Get C++ Tools
+        uses: KobNael/nael_cpp_action/setup_cpp@v1
+        with:
+          KEY: win-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
+      # Release Build
+      - name: Release conan build
+        uses: KobNael/nael_cpp_action/cmake_build@v1
+        with:
+          BUILD_TYPE: Release
+      # Test
+      - name: Release analysis
+        uses: KobNael/nael_cpp_action/tests_cpp@v1
+        with:
+          BUILD_TYPE: Release
+          ROOT_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
+      # Install & upload
+      - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.PATH != ''}}
+        name: Install & upload
+        uses: KobNael/nael_cpp_action/install@v1
+        with:
+          BUILD_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
+          PATH: ${{inputs.PATH}}
