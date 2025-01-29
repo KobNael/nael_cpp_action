@@ -30,4 +30,4 @@ runs:
       name: Create default profile
       shell: bash
       run: >
-        conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b win_compil"
+        conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b main"

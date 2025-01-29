@@ -5,8 +5,8 @@ inputs:
     required: false
     description: The working directory to launch install command
     default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/Release/
-  ARTIFACT_NAME:
-    required: true
+  PATH:
+    required: false
     description: A file, directory or wildcard pattern that describes what to upload
 runs:
   using: composite
@@ -21,4 +21,4 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{runner.os}}-binaries
-        path: ${{inputs.ARTIFACT_NAME}}
+        path: ${{inputs.PATH}}
