@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: make run_unit_tests
     # Coverage
-    - if: ${{ inputs.BUILD_TYPE == 'Debug' && inputs.RUN_COVERAGE }}
+    - if: ${{ inputs.BUILD_TYPE == 'Debug' && inputs.WITH_COVERAGE }}
       name: Run Coverage
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
