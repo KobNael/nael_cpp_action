@@ -132,4 +132,4 @@ jobs:
         name: Install & upload
         uses: KobNael/nael_cpp_action/install@upload
         with:
-          BUILD_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
+          BUILD_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\Release\
