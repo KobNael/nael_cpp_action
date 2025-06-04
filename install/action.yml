@@ -5,9 +5,6 @@ inputs:
     required: false
     description: The working directory to launch install command
     default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/Release/
-  PATH:
-    required: false
-    description: A file, directory or wildcard pattern that describes what to upload
 runs:
   using: composite
   steps:
@@ -15,10 +12,10 @@ runs:
     - name: Run install
       working-directory: ${{inputs.BUILD_DIR}}
       shell: bash
-      run: make install
+      run: cmake --install . --prefix=${{github.workspace}}/install
     # Upload
     - name: Upload binaries
       uses: actions/upload-artifact@v4
       with:
         name: ${{runner.os}}-binaries
-        path: ${{inputs.PATH}}
+        path: ${{github.workspace}}/install/*

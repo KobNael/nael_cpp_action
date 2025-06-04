@@ -24,10 +24,6 @@ on:
           required: false
           type: boolean
           default: false
-      PATH:
-        required: false
-        type: string
-        default: ''
     secrets:
       SONAR_TOKEN:
         required: true
@@ -97,11 +93,9 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
     # Install & upload
-    - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.PATH != ''}}
+    - if: ${{ inputs.UPLOAD_ARTIFACT }}
       name: Install & upload
       uses: KobNael/nael_cpp_action/install@v1
-      with:
-        PATH: ${{inputs.PATH}}
 
   #------------------
   # Windows build
@@ -134,9 +128,8 @@ jobs:
           BUILD_TYPE: Release
           ROOT_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
       # Install & upload
-      - if: ${{ inputs.UPLOAD_ARTIFACT && inputs.PATH != ''}}
+      - if: ${{ inputs.UPLOAD_ARTIFACT }}
         name: Install & upload
         uses: KobNael/nael_cpp_action/install@v1
         with:
           BUILD_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
-          PATH: ${{inputs.PATH}}

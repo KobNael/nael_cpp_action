@@ -9,7 +9,6 @@ Inputs are :
  * RUN_SONAR : should we run the sonar analysis (default true)
  * CHECK_QUALITY_GATE : should we test the quality gate (if RUN_SONAR==true) (default true)
  * UPLOAD_ARTIFACT: should we install the project and then upload an artifact (default false)
- * PATH: A file, directory or wildcard pattern that describes what to upload (default '')
 
 Secrets are :
  * SONAR_TOKEN (required): authentification token for sonar server
@@ -40,7 +39,6 @@ jobs:
       RUN_SONAR: false
       CHECK_QUALITY_GATE: false
       UPLOAD_ARTIFACT: true
-      PATH: "bin/ps_scheduling*"
     secrets:
       GH_PAT: "${{ secrets.GH_PAT }}"
       SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
