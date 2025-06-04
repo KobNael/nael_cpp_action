@@ -12,7 +12,7 @@ Example:
 
 ```yaml
     - name: Install & upload
-      uses: KobNael/nael_cpp_action/install@upload
+      uses: KobNael/nael_cpp_action/install@v1
       with:
         BUILD_DIR: ${{github.workspace}}\builds\Windows\gcc\12\x86_64\Release\
 ```
