@@ -33,7 +33,7 @@ on:
 jobs:
   # Call pipeline
   cpp_pipeline:
-    uses: KobNael/nael_cpp_action/.github/workflows/cpp-workflow.yml@v1
+    uses: KobNael/nael_cpp_action/.github/workflows/cpp-workflow.yml@upload
     with:
       WITH_COVERAGE: false
       RUN_SONAR: false

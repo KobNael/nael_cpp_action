@@ -18,7 +18,7 @@ Example:
 ```yaml
     # Test
     - name: Debug analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@upload
       with:
         BUILD_TYPE: Debug
         WITH_COVERAGE: false
