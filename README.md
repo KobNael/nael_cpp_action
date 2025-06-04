@@ -33,7 +33,6 @@ jobs:
       RUN_SONAR: false
       CHECK_QUALITY_GATE: false
       UPLOAD_ARTIFACT: true
-      PATH: "bin/ps_scheduling*"
     secrets:
       GH_PAT: "${{ secrets.GH_PAT }}"
       SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
