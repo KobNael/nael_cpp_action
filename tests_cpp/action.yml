@@ -19,17 +19,17 @@ runs:
     - name: Run UnitTests
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
-      run: make run_unit_tests
+      run: cmake --build . --target run_unit_tests --config ${{inputs.BUILD_TYPE}}
     # Coverage
-    - if: ${{ inputs.BUILD_TYPE == 'Debug' && inputs.RUN_COVERAGE }}
+    - if: ${{ inputs.BUILD_TYPE == 'Debug' && inputs.WITH_COVERAGE }}
       name: Run Coverage
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
-      run: make run_coverage
+      run: cmake --build . --target run_coverage
     # Memcheck
     - if: ${{ inputs.BUILD_TYPE == 'Debug' }}
       name: Run Valgrind
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
-      run: make run_memcheck
+      run: cmake --build . --target run_memcheck
 
