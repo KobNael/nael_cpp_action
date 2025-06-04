@@ -12,10 +12,14 @@ runs:
     - name: Run install
       working-directory: ${{inputs.BUILD_DIR}}
       shell: bash
-      run: cmake --install . --prefix=${{github.workspace}}/install
+      run: cmake --install .
     # Upload
     - name: Upload binaries
       uses: actions/upload-artifact@v4
       with:
         name: ${{runner.os}}-binaries
-        path: ${{github.workspace}}/install/*
+        path: |
+          ${{github.workspace}}/lib/
+          ${{github.workspace}}/include/
+          ${{github.workspace}}/bin/
+          ${{github.workspace}}/share/
