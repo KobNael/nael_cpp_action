@@ -61,7 +61,7 @@ jobs:
       with:
         BUILD_TYPE: Release
     # Build documentation
-    - name: Sphpinc documentation build
+    - name: Sphinx documentation build and upload
       uses: KobNael/nael_cpp_action/doc_cpp@build_and_deploy_doc
       with:
         BUILD_TYPE: Release

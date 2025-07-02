@@ -17,21 +17,11 @@ runs:
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
       run: cmake --build . --target doc --config ${{inputs.BUILD_TYPE}}
-    - name: Move doc
+    # Upload
+    - name: Upload binaries
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
-      shell: bash
-      run: cp -r  doc/html ${{github.workspace}}/html
-    - name: Upload doc
-      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
-      shell: bash
-      run: cp -r  doc/html ${{github.workspace}}/html
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        # Upload entire repository
-        path: ${{github.workspace}}/html
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+        name: documentation
+        path: |
+          doc/html/
