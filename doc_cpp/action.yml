@@ -1,0 +1,32 @@
+name: doc_cpp
+description: Build documentation and upload it
+inputs:
+  BUILD_TYPE:
+    required: true
+    description: The build type (Release|Debug)
+  ROOT_DIR:
+    required: false
+    description: The working directory
+    default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/
+  GH_PAT:
+    required: false
+    description: Authentification token
+
+runs:
+  using: composite
+  steps:
+    # Build doc
+    - name: Build doc
+      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
+      shell: bash
+      run: cmake --build . --target doc --config ${{inputs.BUILD_TYPE}}
+    - name: Move doc
+      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
+      shell: bash
+      run: mv doc/html/ ${{github.workspace}}/ps_scheduling_doc/
+
+    - name: Deploy website
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ inputs.GH_PAT }}
+        publish_dir: ./ps_scheduling_doc/ # deploy doc folder
