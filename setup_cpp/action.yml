@@ -11,7 +11,7 @@ runs:
     - if: runner.os == 'Linux'
       name: Install
       shell: bash
-      run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind doxygen graphviz
+      run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind doxygen graphviz plantuml
     # Install conan
     - name: Get Conan
       uses: turtlebrowser/get-conan@main
