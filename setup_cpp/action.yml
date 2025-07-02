@@ -11,12 +11,17 @@ runs:
     - if: runner.os == 'Linux'
       name: Install
       shell: bash
-      run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind
+      run : sudo apt-get install -y gcc gcovr lcov libncurses5-dev cppcheck valgrind doxygen graphviz
     # Install conan
     - name: Get Conan
       uses: turtlebrowser/get-conan@main
       with:
         version: 2.11.0
+    # Install python requirements
+    - if: runner.os == 'Linux'
+      name: Get Python requirements
+      shell: bash
+      run : if [ -f requirements.txt ] ; then pip3 install -r requirements.txt ; fi
     # Cache conan local repository
     - name: Cache conan local repository
       id: cache-dependencies
