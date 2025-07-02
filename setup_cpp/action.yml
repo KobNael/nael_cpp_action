@@ -31,3 +31,8 @@ runs:
       shell: bash
       run: >
         conan config install https://github.com/KobNael/nael_cpp_action.git --args="-b main"
+    # Install python requirements
+    - if: runner.os == 'Linux' && ${{ hashFiles('requirements.txt') != '' }}
+      name: Get Python requirements
+      shell: bash
+      run : pip3 install -r requirements.txt
