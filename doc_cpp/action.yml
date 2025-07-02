@@ -1,0 +1,19 @@
+name: doc_cpp
+description: Build documentation and deploy it
+inputs:
+  BUILD_TYPE:
+    required: true
+    description: The build type (Release|Debug)
+  ROOT_DIR:
+    required: false
+    description: The working directory
+    default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/
+
+runs:
+  using: composite
+  steps:
+    # Build doc
+    - name: Build doc
+      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
+      shell: bash
+      run: cmake --build . --target doc --config ${{inputs.BUILD_TYPE}}

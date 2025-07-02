@@ -52,28 +52,33 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     # Get c++ tools
     - name: Get C++ Tools
-      uses: KobNael/nael_cpp_action/setup_cpp@v1
+      uses: KobNael/nael_cpp_action/setup_cpp@build_and_deploy_doc
       with:
         KEY: nux-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
     # Release Build
     - name: Release conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@build_and_deploy_doc
+      with:
+        BUILD_TYPE: Release
+    # Build documentation
+    - name: Release conan build
+      uses: KobNael/nael_cpp_action/doc_cpp@build_and_deploy_doc
       with:
         BUILD_TYPE: Release
     # Test
     - name: Release analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@build_and_deploy_doc
       with:
         BUILD_TYPE: Release
     # Debug Build
     - name: Debug conan build
-      uses: KobNael/nael_cpp_action/cmake_build@v1
+      uses: KobNael/nael_cpp_action/cmake_build@build_and_deploy_doc
       with:
         BUILD_TYPE: Debug
         ARGS: " -o '&:coverage=${{ !inputs.WITH_COVERAGE && 'OFF' || 'ON' }}' -o '&:cppcheck=ON' -o '&:valgrind=ON'"
     # Test
     - name: Debug analysis
-      uses: KobNael/nael_cpp_action/tests_cpp@v1
+      uses: KobNael/nael_cpp_action/tests_cpp@build_and_deploy_doc
       with:
         BUILD_TYPE: Debug
         WITH_COVERAGE: ${{inputs.WITH_COVERAGE}}
@@ -96,7 +101,7 @@ jobs:
     # Install & upload
     - if: ${{ inputs.UPLOAD_ARTIFACT }}
       name: Install & upload
-      uses: KobNael/nael_cpp_action/install@v1
+      uses: KobNael/nael_cpp_action/install@build_and_deploy_doc
 
   #------------------
   # Windows build
@@ -114,23 +119,23 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       # Get c++ tools
       - name: Get C++ Tools
-        uses: KobNael/nael_cpp_action/setup_cpp@v1
+        uses: KobNael/nael_cpp_action/setup_cpp@build_and_deploy_doc
         with:
           KEY: win-${{ hashFiles('./conanfile.py') }}-${{ hashFiles('./CMakeLists.txt') }}
       # Release Build
       - name: Release conan build
-        uses: KobNael/nael_cpp_action/cmake_build@v1
+        uses: KobNael/nael_cpp_action/cmake_build@build_and_deploy_doc
         with:
           BUILD_TYPE: Release
       # Test
       - name: Release analysis
-        uses: KobNael/nael_cpp_action/tests_cpp@v1
+        uses: KobNael/nael_cpp_action/tests_cpp@build_and_deploy_doc
         with:
           BUILD_TYPE: Release
           ROOT_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\
       # Install & upload
       - if: ${{ inputs.UPLOAD_ARTIFACT }}
         name: Install & upload
-        uses: KobNael/nael_cpp_action/install@v1
+        uses: KobNael/nael_cpp_action/install@build_and_deploy_doc
         with:
           BUILD_DIR: ${{github.workspace}}\builds\Windows\msvc\194\x86_64\Release\
