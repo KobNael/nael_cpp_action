@@ -1,5 +1,5 @@
 name: doc_cpp
-description: Build documentation and deploy it
+description: Build documentation and upload it
 inputs:
   BUILD_TYPE:
     required: true
@@ -8,6 +8,9 @@ inputs:
     required: false
     description: The working directory
     default: ${{github.workspace}}/builds/Linux/gcc/13/x86_64/
+  GH_PAT:
+    required: false
+    description: Authentification token
 
 runs:
   using: composite
@@ -21,10 +24,9 @@ runs:
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
       run: mv doc/html/ ${{github.workspace}}/ps_scheduling_doc/
-    # Upload
-    - name: Upload binaries
-      uses: actions/upload-artifact@v4
+
+    - name: Deploy website
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: documentation
-        path: |
-          ps_scheduling_doc/
+        github_token: ${{ inputs.GH_PAT }}
+        publish_dir: ./ps_scheduling_doc/ # deploy doc folder
