@@ -61,7 +61,11 @@ jobs:
       with:
         BUILD_TYPE: Release
     # Build documentation (dev only)
-    - if: github.ref == 'refs/heads/dev'
+    - name: print ref
+      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
+      shell: bash
+      run: echo ${{github.ref}}
+    - if: ${{github.ref}} == 'refs/heads/dev'
       name: Sphinx documentation build and upload
       uses: KobNael/nael_cpp_action/doc_cpp@doc_deploy
       with:
