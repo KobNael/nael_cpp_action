@@ -60,14 +60,10 @@ jobs:
       uses: KobNael/nael_cpp_action/cmake_build@dev
       with:
         BUILD_TYPE: Release
-    # Build documentation (dev only)
-    - name: print ref
-      working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
-      shell: bash
-      run: echo ${{github.event.repository.default_branch}}
+    # Build documentation (default branch only)
     - if: ${{ always() && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}
       name: Sphinx documentation build and upload
-      uses: KobNael/nael_cpp_action/doc_cpp@doc_deploy
+      uses: KobNael/nael_cpp_action/doc_cpp@dev
       with:
         BUILD_TYPE: Release
         GH_PAT: ${{ secrets.GH_PAT }}
