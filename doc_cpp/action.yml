@@ -23,10 +23,10 @@ runs:
     - name: Move doc
       working-directory: ${{inputs.ROOT_DIR}}${{inputs.BUILD_TYPE}}
       shell: bash
-      run: mv doc/html/ ${{github.workspace}}/ps_scheduling_doc/
+      run: mv doc/html/ ${{github.workspace}}/html_doc/
 
     - name: Deploy website
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ inputs.GH_PAT }}
-        publish_dir: ./ps_scheduling_doc/ # deploy doc folder
+        publish_dir: ./html_doc/ # deploy doc folder

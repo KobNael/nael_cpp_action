@@ -60,9 +60,10 @@ jobs:
       uses: KobNael/nael_cpp_action/cmake_build@dev
       with:
         BUILD_TYPE: Release
-    # Build documentation
-    - name: Sphinx documentation build and upload
-      uses: KobNael/nael_cpp_action/doc_cpp@dev
+    # Build documentation (dev only)
+    - if: github.ref == 'refs/heads/dev'
+      name: Sphinx documentation build and upload
+      uses: KobNael/nael_cpp_action/doc_cpp@doc_deploy
       with:
         BUILD_TYPE: Release
         GH_PAT: ${{ secrets.GH_PAT }}
