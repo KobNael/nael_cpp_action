@@ -87,7 +87,7 @@ jobs:
     # Sonar analysis
     - if: ${{ inputs.RUN_SONAR }}
       name: Sonar analysis
-      uses: SonarSource/sonarqube-scan-action@v4
+      uses: SonarSource/sonarqube-scan-action@v6.0.0
       env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # SonarQube URL is stored in a GitHub secret
