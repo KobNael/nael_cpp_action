@@ -2,7 +2,7 @@
 # Full pipeline
 
 Full C++ pipeline.   
-Runs on on ubuntu-latest and windows-latest.
+Runs on on ubuntu-latest and windows-2022.
 
 Inputs are :
  * WITH_COVERAGE : should we launch the coverage target (default false)

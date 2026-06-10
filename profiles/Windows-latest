@@ -2,7 +2,7 @@
 arch=x86_64
 os=Windows
 compiler=msvc
-compiler.version=195
+compiler.version=194
 compiler.cppstd=20
 compiler.runtime=dynamic
 
