@@ -50,6 +50,18 @@ jobs:
         clean: true # clean checkout
         submodules: recursive # Submodules needed
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    # Free disk space (Release+Debug w/ coverage+cppcheck+valgrind fills the default ~14GB runner disk,
+    # which then makes the Sonar scanner engine download fail with "No space left on device")
+    - name: Free disk space
+      uses: jlumbroso/free-disk-space@v2.0.0
+      with:
+        tool-cache: false
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
     # Get c++ tools
     - name: Get C++ Tools
       uses: KobNael/nael_cpp_action/setup_cpp@dev
